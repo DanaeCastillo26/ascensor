@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<style type="text/css">
+		*{
+			padding: 0px;
+			margin: 0px;
+			font-family: arial;
+		}
+		.edificio{
+			height: 100vh;
+			position: relative;
+			float: left;
+		}
+		.edificio img{
+			height: 100vh;
+		}
+		.ascensor{
+			position: absolute;
+		}
+		.btn{
+			width: 100px;
+			height: 100px;
+			margin: 10px;
+			padding: 10px;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: 0.2s all ease;
+		}
+		.btn:hover{
+			transform: scale(1.1);
+			background: #c2c2c2;
+		}
+		button{
+			font-size: 20px;
+			padding: 10px;
+			border: 1px solid #c2c2c2;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.total{
+			margin: 10px;
+			font-size: 20px;
+		}
+		.total-ascensor:before{
+			content: "Ascensor: ";
+		}
+		.total-personas:before{
+			content: "Personas bajadas: ";
+		}
+	</style>
+</head>
+<body>
+
+	<div class="edificio" id="edificio">
+		<img src="img/edificio.jpg" id="edificio">
+	</div>
+	<img src="img/ascensor_vacio.jpg" class="ascensor" id="ascensor">
+	<img class="btn" src="img/arriba.png" id="arriba">
+	<img class="btn" src="img/abajo.png" id="abajo">
+	<div>
+		<div class="total total-personas" id="total-personas"></div>
+		<div class="total total-ascensor" id="persona-ascensor"></div>
+		<button id="meter-sacar">Meter/sacar persona</button>
+	</div>
+
+<script type="text/javascript">
+	
+	var ascensor=document.getElementById('ascensor');
+	var edificio=document.getElementById('edificio');
+	var total_pisos=5;
+	var aumento_piso=edificio.offsetHeight/this.total_pisos;
+	var posi_actual=5;
+	var persona={
+		img:null,
+		piso:0
+	};
+	var limite=3;
+	var total_personas=0;
+
+	document.addEventListener("DOMContentLoaded",()=>{
+		this.ascensor.style.left=(this.edificio.offsetWidth/2)+"px";
+		this.ascensor.style.top=(this.aumento_piso*(this.posi_actual-1))+"px";
+		this.ascensor.style.width=(this.edificio.offsetWidth/4)+"px";
+		this.ascensor.style.height=this.aumento_piso+"px";
+		document.getElementById('total-personas').innerHTML=this.total_personas;
+		document.getElementById('persona-ascensor').innerHTML=this.ascensor.childElementCount;
+		this.crearPersona();
+	});
+
+	document.getElementById("arriba").addEventListener("click",()=>{
+		posi_actual--;
+		this.ascensor.style.top=(this.aumento_piso*(this.posi_actual-1))+"px";
+	});
+
+	document.getElementById("abajo").addEventListener("click",()=>{
+		posi_actual++;
+		this.ascensor.style.top=(this.aumento_piso*(this.posi_actual-1))+"px";
+	});
+
+	document.getElementById('meter-sacar').addEventListener("click",()=>{
+		if(this.posi_actual==this.total_pisos){
+			let vueltas=this.ascensor.childElementCount;
+			if(vueltas>0){
+				for(let a=0; a<vueltas; a++){
+					this.ascensor.childNodes[0].style.top=(this.aumento_piso*(this.posi_actual-1))+"px";
+					this.edificio.appendChild(this.ascensor.childNodes[0]);
+					document.getElementById('persona-ascensor').innerHTML=this.ascensor.childElementCount+" / "+limite;
+					this.total_personas++;
+					document.getElementById('total-personas').innerHTML=this.total_personas;
+				}
+			}else{
+				alert("No hay personas en el ascensor");
+			}
+		}else
+		if(this.posi_actual==this.persona.piso){
+			if(this.ascensor.childElementCount<limite){
+				this.ascensor.appendChild(this.persona.img);
+				document.getElementById('persona-ascensor').innerHTML=this.ascensor.childElementCount+" / "+limite;
+				this.crearPersona();
+			}else{
+				alert("No caben más personas. Sacalos en la primera planta");
+			}
+		}else{
+			alert("No hay persona");
+		}
+	});
+
+	function crearPersona(){
+		let num=Math.round(Math.random()*(this.total_pisos-2)+1);
+		let img=document.createElement("img");
+		img.src="img/persona.jpg";
+		img.style.position="absolute";
+		img.style.height=(this.aumento_piso-20)+"px";
+		img.style.left=(this.edificio.offsetWidth/5)+"px";
+		img.style.top=(this.aumento_piso*(num-1)+10)+"px";
+		this.persona.img=img;
+		this.persona.piso=num;
+		this.edificio.appendChild(this.persona.img);
+	}
+
+
+</script>
+
+</body>
+</html>
